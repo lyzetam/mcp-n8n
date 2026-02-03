@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-import os
-
 import requests
+
+from mcp_n8n.config import get_settings
 
 
 class N8nClient:
     """Manages requests sessions for n8n API.
 
-    Reads configuration from environment variables:
-    - N8N_BASE_URL (default: http://localhost:5678)
-    - N8N_API_KEY
+    Configuration is loaded from environment variables (N8N_* prefix)
+    or a .env file via Pydantic Settings. Explicit constructor params
+    override settings values.
     """
 
     def __init__(
@@ -20,12 +20,9 @@ class N8nClient:
         base_url: str | None = None,
         api_key: str | None = None,
     ) -> None:
-        raw_host = os.environ.get("N8N_HOST", "localhost:5678").strip()
-        raw_protocol = os.environ.get("N8N_PROTOCOL", "http").strip()
-        default_url = f"{raw_protocol}://{raw_host}"
-
-        self.base_url = (base_url or os.environ.get("N8N_BASE_URL", default_url)).strip().rstrip("/")
-        self.api_key = (api_key or os.environ.get("N8N_API_KEY", "")).strip()
+        settings = get_settings()
+        self.base_url = (base_url or settings.resolved_base_url).strip().rstrip("/")
+        self.api_key = (api_key or settings.api_key).strip()
 
     @property
     def api_url(self) -> str:

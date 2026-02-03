@@ -3,7 +3,7 @@ name = "mcp-n8n"
 version = "0.1.0"
 description = "n8n workflow automation API as Python library, LangChain tools, and MCP server"
 requires-python = ">=3.10"
-dependencies = ["requests>=2.31.0"]
+dependencies = ["requests>=2.31.0", "pydantic-settings>=2.0"]
 
 [project.optional-dependencies]
 mcp = ["fastmcp>=0.1.0"]
